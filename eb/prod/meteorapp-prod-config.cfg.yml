@@ -1,0 +1,72 @@
+SolutionStack: 64bit Amazon Linux 2017.03 v2.7.3 running Docker 17.03.1-ce
+
+AWSConfigurationTemplateVersion: 1.1.0.0
+
+EnvironmentTier:
+  Type: Standard
+  Name: WebServer
+
+OptionSettings:
+  aws:elasticbeanstalk:command:
+    BatchSize: '1'
+    BatchSizeType: Fixed
+    Timeout: '500'
+    IgnoreHealthCheck: 'false'
+    DeploymentPolicy: 'Rolling'
+
+  aws:autoscaling:asg:
+    Availability Zones: 'Any 2'
+    Cooldown: '300'
+    MinSize: '2'
+    MaxSize: '8'
+
+  aws:elasticbeanstalk:application:
+    Application Healthcheck URL: '/'
+
+  aws:elasticbeanstalk:hostmanager:
+    LogPublicationControl: 'true'
+
+  aws:elasticbeanstalk:monitoring:
+    Automatically Terminate Unhealthy Instances: 'true'
+
+  aws:elasticbeanstalk:sns:topics:
+    Notification Endpoint: 'd.kagarlickij@outlook.com'
+
+  aws:elb:healthcheck:
+    HealthyThreshold: '4'
+    Interval: '5'
+    Timeout: '3'
+    UnhealthyThreshold: '2'
+
+  aws:autoscaling:launchconfiguration:
+    IamInstanceProfile: 'aws-elasticbeanstalk-ec2-role'
+    EC2KeyName: 'aws-lab'
+    InstanceType: 't2.micro'
+    SSHSourceRestriction: 'tcp, 22, 22, 52.7.215.249/32'
+    MonitoringInterval: '1 minute'
+    RootVolumeType: 'io1'
+    RootVolumeSize: '20'
+    RootVolumeIOPS: '600'
+
+  aws:autoscaling:updatepolicy:rollingupdate:
+    RollingUpdateEnabled: 'true'
+    MaxBatchSize: '1'
+    MinInstancesInService: '1'
+
+  aws:autoscaling:trigger:
+    BreachDuration: '3'
+    LowerBreachScaleIncrement: '-2'
+    LowerThreshold: '1'
+    MeasureName: 'Latency'
+    Period: '5'
+    Statistic: 'Minimum'
+    Unit: 'Seconds'
+    UpperBreachScaleIncrement: '2'
+    UpperThreshold: '3'
+
+  aws:elasticbeanstalk:environment:
+    EnvironmentType: 'LoadBalanced'
+    ServiceRole: 'aws-elasticbeanstalk-service-role'
+
+  aws:elasticbeanstalk:healthreporting:system:
+    SystemType: 'Enhanced'
